@@ -1,7 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
-const Campground = require('./models/campground');
+let Campground;
+Campground = require('./models/campground');
 mongoose.connect('mongodb://localhost:27017/yelp-camp').then(() => console.log('Mongo connection')).catch((error) => console.log(error));
 
 const db = mongoose.connection;
