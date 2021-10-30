@@ -5,10 +5,11 @@ let Campground;
 Campground = require('../models/campground');
 let Review;
 Review = require('../models/review');
-const { validateReview } = require('../middleware');
-router.post('/', validateReview, catchAsync(async (req, res) => {
+const { isLoggedIn, validateReview } = require('../middleware');
+router.post('/', isLoggedIn, validateReview, catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id);
     const review = new Review(req.body.review);
+    review.author = req.user._id;
     campground.reviews.push(review);
     await review.save();
     await campground.save();
