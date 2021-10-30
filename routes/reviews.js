@@ -5,7 +5,7 @@ let Campground;
 Campground = require('../models/campground');
 let Review;
 Review = require('../models/review');
-const { isLoggedIn, validateReview } = require('../middleware');
+const { isLoggedIn, validateReview, isReviewAuthor } = require('../middleware');
 router.post('/', isLoggedIn, validateReview, catchAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id);
     const review = new Review(req.body.review);
@@ -17,7 +17,7 @@ router.post('/', isLoggedIn, validateReview, catchAsync(async (req, res) => {
     res.redirect(`/campgrounds/${campground._id}`);
 }));
 
-router.delete('/:reviewId', catchAsync( async (req, res) => {
+router.delete('/:reviewId', isLoggedIn, isReviewAuthor, catchAsync( async (req, res) => {
     const campgroundId = req.params.id;
     const reviewId = req.params.reviewId;
     await Review.findByIdAndDelete(reviewId);
