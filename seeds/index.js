@@ -22,7 +22,12 @@ const seedDb = async () => {
             title: `${sample(descriptors)} ${sample(places)}`,
             description: 'Paleo meh disrupt, banjo officia labore cupidatat ethical. Cray seitan keytar PBR&B. Ennui narwhal bespoke laboris. Qui eu normcore occupy direct trade single-origin coffee umami banh mi twee do gastropub truffaut. Consequat laboris helvetica, ennui selvage williamsburg blog roof party sustainable glossier ethical messenger bag. 90\'s ugh authentic esse, palo santo exercitation actually edison bulb health goth subway tile kombucha.',
             price: price,
-            geometry: {type: 'Point', coordinates: [24.15, 45.8]},
+            geometry: {
+                type: 'Point', coordinates: [
+                    cities[random1000].longitude,
+                    cities[random1000].latitude
+                ]
+            },
             images: [
                 {
                     url: 'https://res.cloudinary.com/drchkiqdc/image/upload/v1635683367/YelpCamp/xuscngvkjlhdx6d5zznd.jpg',
