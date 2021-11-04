@@ -20,9 +20,11 @@ const LocalStrategy = require('passport-local');
 const User = require('./models/user');
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
-const dbUrl = process.env.DB_URL;
+// const dbUrl = process.env.DB_URL;
+const dbUrl = 'mongodb://localhost:27017/yelp-camp';
+const MongoStore = require('connect-mongo');
 
-mongoose.connect('mongodb://localhost:27017/yelp-camp').then(() => console.log('Mongo connection')).catch((error) => console.log(error));
+mongoose.connect(dbUrl).then(() => console.log('Mongo connection')).catch((error) => console.log(error));
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -39,7 +41,19 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({extended: true}));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
+
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    crypto: {
+        secret: 'improvedandoverhauledsecret',
+    },
+    touchAfter: 24 * 3600,
+});
+store.on('error', function (e) {
+    console.log('SESSION STORE ERROR ', e);
+})
 const sessionConfig = {
+    store: store,
     name: 'myCampgroundAppCookie',
     secret: 'thisisabettersecret',
     resave: false,
@@ -51,8 +65,9 @@ const sessionConfig = {
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
 }
-app.use(mongoSanitize());
 app.use(session(sessionConfig));
+app.use(mongoSanitize());
+
 app.use(flash());
 
 app.use(helmet());
