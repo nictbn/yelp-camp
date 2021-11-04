@@ -18,6 +18,7 @@ const ExpressError = require('./utils/ExpressError');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/user');
+const mongoSanitize = require('express-mongo-sanitize');
 
 mongoose.connect('mongodb://localhost:27017/yelp-camp').then(() => console.log('Mongo connection')).catch((error) => console.log(error));
 
@@ -46,6 +47,7 @@ const sessionConfig = {
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
 }
+app.use(mongoSanitize());
 app.use(session(sessionConfig));
 app.use(flash());
 
